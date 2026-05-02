@@ -3,13 +3,22 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class Spice extends Model
 {
     //
-
     protected $fillable = ['name'];
     protected $table='spices';
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($spice) {
+            $spice->slug = $spice->slug ?? Str::slug($spice->name);
+        });
+    }
 
     public function spice_categories(){
         return $this->belongsToMany(SpiceCategory::class ,'spice_group');
