@@ -16,11 +16,23 @@ class SpiceCategorySeeder extends Seeder
     {
         //
         $spicewithcategories=[
-            'Almond-extract'=>['Sweet','Nutty'],
-            'Anise'=>['Sweet','Pungent'],
-            'Basil'=>['Herby','Cooling'],
-            'Bay leaves'=>['Herby','Bitter'],
-            'Cardamom'=>['Sweet','Pungent','Woody']
+    
+            'Cocoa'=>['Sweet','Nutty','Woody'],
+            'Cream of Tartar'=>['Sour','Bitter','Pungent'],
+            'Cumin'=>['Earthy','Spicy','Bitter'],
+            'Dill Weed'=>['Herby'],
+            'Fennel Seeds'=>['Sweet','Sour'],
+            'Fish Sauce'=>['Spicy','Pungent'],
+            'Dehydrated Garlic'=>['Pungent','Bitter'],
+            'Crystallized Ginger'=>['Spicy','Earthy',],
+            'Ginger Powder'=>['Earthy',"Bitter"],
+            'Herbs de Provence'=>['Herby','Sweet'],
+            'Lemon Extract'=>['Sour','Cooling'],
+            'Lemon Pepper'=>['Sour','Spicy'],
+            'Mustard Seed'=>['Earthy','Nutty'],
+            'Nutmeg'=>['Sweet','Nutty','Woody'],
+            'Marjoram'=>['Herby','Earthy']
+
         ];
 
         foreach($spicewithcategories as $spice => $categories){

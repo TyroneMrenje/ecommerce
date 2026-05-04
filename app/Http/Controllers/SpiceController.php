@@ -19,7 +19,8 @@ class SpiceController extends Controller
         $spiceDescription = DB::table('spice_description')
         ->join('spices', 'spice_description.spices_id', '=','spices.id')
         ->join('spice_format', 'spice_description.spice_format_id', '=', 'spice_format.id')
-        ->select('spices.name','spices.id as product_id', 'spice_description.image','spice_format.format');
+        ->select('spices.name','spices.id as product_id', 'spice_description.image','spice_format.format')
+        ->orderBy('spices.name', 'asc');
 
         $spice_category = DB::table('spice_group')
         ->join('spice_category', 'spice_group.spice_category_id', '=', 'spice_category.id')
@@ -30,6 +31,7 @@ class SpiceController extends Controller
         ->fromSub($spiceDescription, 'spice_description')
         ->leftJoinSub($spice_category, 'spice_category', 'spice_description.product_id', '=', 'spice_category.product_id')
         ->select('spice_description.product_id','spice_description.name', 'spice_description.image', 'spice_description.format', 'spice_category.category')
+        ->orderBy('spice_description.name', 'asc')
         ->get();
         
         

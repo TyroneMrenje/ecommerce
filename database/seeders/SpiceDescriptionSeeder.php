@@ -17,20 +17,40 @@ class SpiceDescriptionSeeder extends Seeder
     {
         //
         $spiceWithDecriptions=[
-            ['name' => 'Almond-extract', 'format'=> 'Whole', 'image'=> 'spices/almondwhole.jpg'],
 
-            ['name' => 'Almond-extract', 'format' => 'Liquid', 'image'=>'spices/almond-liquid.webp'],
+            ['name' =>'Cocoa', 'format'=> 'Ground', 'image'=> 'spices/cocoa_powder.webp'],
 
-            ['name' => 'Anise', 'format' => 'Whole', 'image' => 'spices/anise.jpg'],
+            ['name'=>'Cream of Tartar', 'format'=>'Powdered', 'image'=>'spices/creamof_tartar.webp'],
 
-            ['name' => 'Basil', 'format' => 'Herbaceous' , 'image'=>'spices/basil.webp' ],
+            ['name'=>'Cumin', 'format'=>'Ground', 'image'=> 'spices/cumin.webp'],
 
-            ['name' =>'Bay leaves', 'format' => 'Herbaceous','image'=>'spices/bayleaf.jpeg'],
+            ['name'=>'Dill Weed', 'format'=>'Herbaceous', 'image'=>'spices/dill_weed.jpg'],
 
-            ['name'=>'Cardamom', 'format' => 'Whole','image'=>'spices/cardamom_whole.jpeg'],
+            ['name'=>'Fennel Seeds', 'format'=>'Whole', 'image'=>'spices/fennel.jpg'],
 
-            ['name'=>'Cardamom', 'format' => 'Ground','image'=>'spices/cardamom_ground.png'],
+            ['name'=>'Fish Sauce', 'format'=>'Liquid', 'image'=>'spices/fish_sauce.jpg'],
 
+            ['name'=>'Dehydrated Garlic', 'format'=>'Whole', 'image'=>'spices/garlic_dehydrated.webp'],
+
+            ['name'=>'Crystallized Ginger', 'format'=>'Whole', 'image'=>'spices/crystal_ginger.jpg'],
+
+            ['name'=>'Ginger Powder', 'format'=>'Ground', 'image'=>'spices/ground_ginger.jpg'],
+
+            ['name'=>'Herbs de Provence', 'format'=>'Blend', 'image'=>'spices/herb_de_provence.webp'],
+
+            ['name'=>'Lemon Extract', 'format'=>'Liquid', 'image'=>'spices/lemon_extract.jpeg'],
+
+            ['name'=>'Mustard Seed', 'format'=>'Whole', 'image'=>'spices/mustard_seeds.png'],
+
+            ['name'=>'Mustard Seed', 'format'=>'Ground', 'image'=>'spices/ground_mustard.webp'],
+
+            ['name'=>'Lemon Pepper', 'format'=>'Blend', 'image'=>'spices/lemon_pepper.jpg'],
+
+            ['name'=>'Nutmeg', 'format'=>'Ground', 'image'=>'spices/ground-nutmeg.jpg'],
+
+            ['name'=>'Marjoram', 'format'=>'Herbaceous', 'image'=> 'spices/marjoram.jpg']
+
+          
 
         ];
         

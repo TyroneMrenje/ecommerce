@@ -14,7 +14,7 @@ class SpiceFormatSeeder extends Seeder
     public function run(): void
     {
         //
-        $formats=["Whole","Ground", "Blend","Herbaceous","Liquid"];
+        $formats=["Whole","Ground","Blend","Powdered","Herbaceous","Liquid"];
 
         foreach($formats as $format){
             SpiceFormatModel::firstOrCreate(['format' => $format]);
