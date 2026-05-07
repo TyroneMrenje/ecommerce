@@ -8,7 +8,7 @@ use Illuminate\Support\Str;
 class Spice extends Model
 {
     //
-    protected $fillable = ['name'];
+    protected $fillable = ['name','description'];
     protected $table='spices';
 
     protected static function boot()

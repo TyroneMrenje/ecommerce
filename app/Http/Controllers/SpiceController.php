@@ -39,4 +39,21 @@ class SpiceController extends Controller
             'spices'=> $spices
         ]);
  }
+
+    public function searchbyCategory(Request $request){
+       
+       $category= $request->input('category');
+
+        $spiceDescription = DB::table('spice_description')
+        ->join('spices', 'spice_description.spices_id', '=','spices.id')
+        ->join('spice_format', 'spice_description.spice_format_id', '=', 'spice_format.id')
+        ->select('spices.name','spices.id as product_id', 'spice_description.image','spice_format.format')
+        ->orderBy('spices.name', 'asc');
+
+        
+
+
+
+
+    }
 }

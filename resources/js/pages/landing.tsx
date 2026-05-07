@@ -1,6 +1,7 @@
 import { Head } from "@inertiajs/react";
 import { Spice } from "@/types/spice";
 import Navbar from "@/components/navbar"; 
+import Footer from "@/components/footer";
  
 interface Props {
     spices: Spice[];
@@ -26,18 +27,15 @@ export default function LandingPage({ spices }: Props){
                 <div className="text-center">
                     <h2 className=" font-semibold text-[#3d4246] text-lg ">{spice.name},&nbsp;&nbsp;{spice.format}</h2>
                     <hr className="border-t border-gray-700"></hr> 
-                     {spice.category?.split("  ").map((category, index) => (
-                        
-                         <p key={index} className="font-semibold">{category ?? 'N/A'}</p>
-                                        
-                    ))}    
+                    <p className="text-[#3d4246] font-bold text-lg gap-4">{spice.category}</p>
                 </div>
                 <div className="flex items-center justify-center m-5 ">
-                   <button className="border border-[#a2252a] border-4 p-2 w-[90%] rounded-lg font-bold text-[#a2252a]">ADD TO CART</button>
+                   <button className="border border-[#a2252a] border-3  w-[90%] rounded-lg font-bold text-[#a2252a] hover:text-white hover:fill-[#a2252a]">ADD TO CART</button>
                 </div>
             </div>
            ))}
        </div>  
+       
      </div>
       
     )

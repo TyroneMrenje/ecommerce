@@ -14,18 +14,18 @@ const Navbar = () => {
   return (
     <nav className="fixed top-0 w-full bg-background/70 backdrop-blur z-50 border-b border-gray-300">
         <div className="container mx-auto">
-            <div className="flex justify-between h-16">
-                <div className="flex gap-4 items-center">
-                    <Link href="/spices" prefetch className="font-bold text-[#a2252a] text-lg mr-4">Amimo Spices</Link>
-                    <Link href="" prefetch className="text-md">About</Link>
-                    <Link href="text-md" prefetch>Contact</Link>
-                    <Link href="text-md" prefetch>Yebba</Link>
-                </div>
+            <div className="flex justify-between h-16 items-center">
+                 <Link href="/spices" prefetch className="font-bold text-[#a2252a] text-lg mr-4">Amimo Spices</Link>
+                <div className="flex gap-4">
+                  <Link href="" prefetch className="text-md">About</Link>
+                  <Link href="text-md" prefetch>Contact</Link>
+                  <Link href="text-md" prefetch>Yebba</Link>
+                </div>              
                 <div className="flex gap-4">
                     <button>
                         <IoMdSearch  className="h-5 w-5"/>
                     </button>
-                     <button>
+                     <button >
                         <MdOutlineShoppingCart  className="h-5 w-5"/>
                     </button>
                      <button>
