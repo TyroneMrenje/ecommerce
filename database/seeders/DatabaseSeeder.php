@@ -18,8 +18,9 @@ class DatabaseSeeder extends Seeder
             SpiceCategory::class,
             SpiceCategorySeeder::class,                
             SpicePriceSeeder::class,
-            SpiceDescriptionSeeder::class
-
+            SpiceDescriptionSeeder::class,
+            SpiceDescriptionInfoSeeder::class,
+            SpiceCuisineSeeder::class
         ]);
     }
 }
