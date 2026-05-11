@@ -6,6 +6,8 @@ use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
+use function Laravel\Prompts\form;
+
 class DatabaseSeeder extends Seeder
 {
     /**
@@ -20,7 +22,8 @@ class DatabaseSeeder extends Seeder
             SpicePriceSeeder::class,
             SpiceDescriptionSeeder::class,
             SpiceDescriptionInfoSeeder::class,
-            SpiceCuisineSeeder::class
+            SpiceCuisineSeeder::class,
+            formatCategorySeeder::class
         ]);
     }
 }

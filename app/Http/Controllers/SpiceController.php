@@ -6,15 +6,11 @@ use App\Models\Spice;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 
 class SpiceController extends Controller
 {
-    //
-    public function allSpices(Spice $spice){
-         return $spice->all();
-    }
-
     public function getAllSpice(){
         $spiceDescription = DB::table('spice_description')
         ->join('spices', 'spice_description.spices_id', '=','spices.id')
@@ -42,18 +38,78 @@ class SpiceController extends Controller
 
     public function searchbyCategory(Request $request){
        
-       $category= $request->input('category');
+        $request->validate([
+            'category' => 'required|string|max:100|exists:spice_category,category',
+        ]);
 
-        $spiceDescription = DB::table('spice_description')
+       $category= $request->input('category');
+       
+       $spiceDescription = DB::table('spice_description')
         ->join('spices', 'spice_description.spices_id', '=','spices.id')
         ->join('spice_format', 'spice_description.spice_format_id', '=', 'spice_format.id')
         ->select('spices.name','spices.id as product_id', 'spice_description.image','spice_format.format')
         ->orderBy('spices.name', 'asc');
 
+
+        $spiceCategory = DB::table('spice_group')
+        ->join('spice_category', 'spice_group.spice_category_id', '=', 'spice_category.id') 
+        ->select(
+            'spice_group.spice_id as product_id',
+            DB::raw("string_agg(spice_category.category, ', ') as category")
+        )
+        ->where('spice_category.category', $category) 
+        ->groupBy('spice_group.spice_id');
+
+
+
+        $results= DB::query()
+        ->fromSub($spiceDescription, 'spice_description')
+        ->leftJoinSub($spiceCategory, 'spice_category', 'spice_description.product_id', '=', 'spice_category.product_id')
+        ->select('spice_description.product_id','spice_description.name', 'spice_description.image', 'spice_description.format', 'spice_category.category')
+        ->orderBy('spice_description.name','asc')
+        ->get();
+
+        return Inertia::render('landing',[
+            'category'=> $results
+        ]);
+
         
+    }
 
 
+    public function searchbyFormat(Request $request){
 
+        $request->validate([
+            'format' => 'required|string|max:100|exists:spice_format,format',
+        ]);
+
+        $format=$request->input('format');
+
+        $spiceDescription = DB::table('spice_description')
+        ->join('spices', 'spice_description.spices_id', '=','spices.id')
+        ->join('spice_format', 'spice_description.spice_format_id', '=', 'spice_format.id')
+        ->select('spices.name','spices.id as product_id', 'spice_description.image','spice_format.format')
+        ->where('spice_format.format', $format)
+        ->orderBy('spices.name', 'asc');
+
+         $spiceCategory = DB::table('spice_group')
+        ->join('spice_category', 'spice_group.spice_category_id', '=', 'spice_category.id')
+        ->select('spice_group.spice_id as product_id', DB::raw("string_agg(spice_category.category, '  ') as category"))
+        ->groupBy('spice_group.spice_id');
+
+        $results= DB::query()
+        ->fromSub($spiceDescription, 'spice_description')
+        ->leftJoinSub($spiceCategory, 'spice_category', 'spice_description.product_id', '=', 'spice_category.product_id')
+        ->select('spice_description.product_id','spice_description.name', 'spice_description.image', 'spice_description.format', 'spice_category.category')
+        ->orderBy('spice_description.name','asc')
+        ->get();
+
+        return Inertia::render('landing',[
+            'format'=> $results
+        ]);
+    }
+
+    public function store(){
 
     }
 }

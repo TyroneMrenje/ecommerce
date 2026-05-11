@@ -11,15 +11,6 @@ class Spice extends Model
     protected $fillable = ['name','description'];
     protected $table='spices';
 
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::creating(function ($spice) {
-            $spice->slug = $spice->slug ?? Str::slug($spice->name);
-        });
-    }
-
     public function spice_categories(){
         return $this->belongsToMany(SpiceCategory::class ,'spice_group');
     }
