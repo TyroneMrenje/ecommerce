@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Spice;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
+
 
 
 class SpiceController extends Controller
@@ -57,7 +56,7 @@ class SpiceController extends Controller
             'spice_group.spice_id as product_id',
             DB::raw("string_agg(spice_category.category, ', ') as category")
         )
-        ->where('spice_category.category', $category) 
+        ->where('spice_category.category','like', "%{$category}%") 
         ->groupBy('spice_group.spice_id');
 
 
@@ -89,7 +88,7 @@ class SpiceController extends Controller
         ->join('spices', 'spice_description.spices_id', '=','spices.id')
         ->join('spice_format', 'spice_description.spice_format_id', '=', 'spice_format.id')
         ->select('spices.name','spices.id as product_id', 'spice_description.image','spice_format.format')
-        ->where('spice_format.format', $format)
+        ->where('spice_format.format', 'like', "%{$format}%")
         ->orderBy('spices.name', 'asc');
 
          $spiceCategory = DB::table('spice_group')
@@ -105,11 +104,43 @@ class SpiceController extends Controller
         ->get();
 
         return Inertia::render('landing',[
-            'format'=> $results
+            'result'=> $results,
+            'filters'=>[
+                'format'=>$format
+            ]
         ]);
     }
 
-    public function store(){
+    public function searchForSpice(Request $request){
+
+      $request->validate([
+            'spice' => 'required|string|max:100|exists:spices,name',
+        ]);
+
+      $spice= $request->input('spice');
+
+      $spiceDescription = DB::table('spice_description')
+        ->join('spices', 'spice_description.spices_id', '=','spices.id')
+        ->join('spice_format', 'spice_description.spice_format_id', '=', 'spice_format.id')
+        ->select('spices.name','spices.recommendation','spices.description','spices.id as product_id', 'spice_description.image','spice_format.format')
+        ->whereRaw("search_vector @@ plainto_tsquery('english', ?)", [$spice])
+        ->orderByRaw("ts_rank(search_vector, plainto_tsquery('english', ?)) desc", [$spice])
+        ->orderBy('spices.name', 'asc');
+
+     $spice_category = DB::table('spice_group')
+        ->join('spice_category', 'spice_group.spice_category_id', '=', 'spice_category.id')
+        ->select('spice_group.spice_id as product_id', DB::raw("string_agg(spice_category.category, '  ') as category"))
+        ->groupBy('spice_group.spice_id');
+
+        
+
+    
+
+
+
+
+
+
 
     }
 }

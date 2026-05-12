@@ -1,6 +1,7 @@
 import { Head } from "@inertiajs/react";
 import { Spice } from "@/types/spice";
 import Navbar from "@/components/navbar"; 
+import { router } from '@inertiajs/react';
 import Footer from "@/components/footer";
 import { IoMdSearch } from "react-icons/io";
 import { useState } from "react";
@@ -21,14 +22,14 @@ export default function LandingPage({ spices }: Props){
        <div className="box-border overflow-hidden scroll-smooth -z-10">
         <Head title="The best spice plug"/>
         <Navbar/>
-        <div className="flex flex-col relative h-30 p-5 md:mt-20 border-b border-gray-600">
+        <div className="flex flex-col relative h-30 p-5 md:mt-20 border-b border-gray-300">
             <h1 className="font-medium text-4xl tracking-tight">Take a look at our spices</h1>
             <p className="text-lg text-balance text-[#7f2629]">Discover ethically sourced, single-origin spices harvested directly from small-scale farmers across the globe.</p>
         </div>
         <div className="flex m-5 gap-4">
             <button onClick={toggleDropdown} className="rounded-2xl p-2 bg-[#eff2f9] border-2">Show filter</button>
             <button onClick={toggleDropdownSort}  className="bg-[#eff2f9] rounded-2xl p-2 border-2">Sort by:</button>
-            <input className="border-2 rounded-lg w-70 p-3" placeholder="Enter spices"/>
+            <input className="border-2 rounded-lg w-70 p-2" placeholder="Enter spices"/>
             <button className="relative right-15"><IoMdSearch className="h-6 w-6"/></button>
         </div>     
           { 
@@ -143,7 +144,7 @@ export default function LandingPage({ spices }: Props){
               </div>
             )}
         <div
-            className={`grid flex-1 gap-5 m-3 grid-cols-1 md:grid-cols-3 lg:${isOpen ? "grid-cols-3" : "grid-cols-4"}`}>
+            className={`grid flex-1 gap-5 m-3 grid-cols-1  ${isOpen ? "md:grid-cols-3 lg:grid-cols-3" : "md:grid-cols-4 lg:grid-cols-4"}`}>
             {spices.map((spice) => (
                 <div  key={spice.product_id}  className="shadow-xl border border-gray-300 rounded-lg">
                     <img

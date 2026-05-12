@@ -15,7 +15,7 @@ const Navbar = () => {
     <nav className="fixed top-0 w-full bg-background/70 backdrop-blur z-50 border-b border-gray-300">
         <div className="container mx-auto">
             <div className="flex justify-between h-16 items-center">
-                 <Link href="/spices" prefetch className="font-bold text-[#a2252a] text-lg mr-4">Amimo Spices</Link>
+                 <Link href="/" prefetch className="font-bold text-[#a2252a] text-lg mr-4">Amimo Spices</Link>
                 <div className="flex gap-4">
                   <Link href="" prefetch className="text-md">About</Link>
                   <Link href="text-md" prefetch>Contact</Link>
