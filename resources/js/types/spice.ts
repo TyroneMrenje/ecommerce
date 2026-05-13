@@ -5,5 +5,7 @@ export interface Spice {
     image:string;
     format:string;
     category:string | null;
+    recommendation:string;
+    description:string;
 
 }

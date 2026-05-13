@@ -14,8 +14,8 @@ return new class extends Migration
     {
         Schema::table('spices', function (Blueprint $table) {
 
-           DB::statement("ALTER TABLE spices ADD COLUMN search_vector tsvector GENERATED ALWAYS AS (to_tsvector('english', name)) STORED");
-           DB::statement(" CREATE INDEX spices_search_vector_idx ON spices USING GIN(search_vector)");
+           DB::statement("ALTER TABLE spices ADD COLUMN search_vector tsvector GENERATED ALWAYS AS (to_tsvector('english', name || ' ' || slug)) STORED");
+           DB::statement("CREATE INDEX spices_search_vector_idx ON spices USING GIN(search_vector)");
             
         });
     }
