@@ -9,6 +9,7 @@ import { useState } from "react";
 import { Link } from "@inertiajs/react";
 import {useDebouncedCallback} from 'use-debounce';
 import axios from "axios";
+import { data } from "react-router-dom";
 
 interface Props {
     initialspices: Spice[];
@@ -31,8 +32,9 @@ export default function LandingPage({ initialspices,categories,format }: Props){
     const toggleDropdown = () =>setIsOpen(!isOpen);
 
     async function fetchbyName(value:string){
-      if(value.length <2) return
+      if(value.length<2) return
       setLoading(true);
+
       try{
         const {data} = await axios.get(`/spice`,{
           headers:{
@@ -42,6 +44,11 @@ export default function LandingPage({ initialspices,categories,format }: Props){
             spice:value
           }
         });
+        if(data.length===0){
+        router.visit("/spices/not-found",{
+          data:{spice:value}
+        })
+      }
         setSpices(data);
       } finally{
         setLoading(false)
@@ -50,14 +57,61 @@ export default function LandingPage({ initialspices,categories,format }: Props){
 
     const handleSearch = useDebouncedCallback((value: string) => {
         fetchbyName(value)
-    }, 400)
+    }, 800)
+
+    async function handleCategory(category:string|null){
+      if(!category || category.length<2)return
+      setLoading(true)
+      try{
+        const {data} =await axios.get('/spices/category',{
+          headers:{
+            "Content-Type": "application/json",
+          },
+          params:{
+            category
+          }
+        });
+        setSpices(data);
+      }finally{
+        setLoading(false)
+      }
+    }
+
+    function fetchbyCategory(category:string){
+      const value = selectedCategory === category ? null : category;
+      setSelectedCategory(value);
+      handleCategory(value);
+    }
+
+    async function fetchbyFormat(format:string | null){
+      if(!format ||format.length<2)return
+      setLoading(true)
+      try{
+        const{data}=await axios.get('/spices/format',{
+          headers:{
+            "content-Type": "application/json"
+          },
+          params:{
+            format
+          }        
+        });
+        setSpices(data);
+      }finally{
+        setLoading(false)
+      }
+    }
+    function handleFormat(format:string |null){
+        const value = selectedFormat === format ? null : format;
+        setSelectedFormat(value);
+        fetchbyFormat(value);
+      }
 
     return(
        <div className="box-border overflow-hidden scroll-smooth -z-10">
         <Head title="The best spice plug"/>
         <Navbar/>
-        <div className="flex flex-col relative h-30 p-5 md:mt-20 border-b border-gray-300">
-            <h1 className="font-medium text-4xl tracking-tight">Take a look at our spices</h1>
+        <div className="flex flex-col text-center relative h-30 p-5 md:mt-20 border-b border-gray-300">
+            <h1 className="font-bold text-4xl tracking-tight">Take a look at our spices</h1>
             <p className="text-lg text-balance text-[#7f2629]">Discover ethically sourced, single-origin spices harvested directly from small-scale farmers across the globe.</p>
         </div>
         <div className="flex m-5 gap-4">
@@ -67,7 +121,7 @@ export default function LandingPage({ initialspices,categories,format }: Props){
               setSearchTerm(e.target.value)
               handleSearch(e.target.value)
             }}/>
-            <button className="relative right-15"><IoMdSearch className="h-6 w-6"/></button>
+            <button className="relative right-15" onClick={() => fetchbyName(searchTerm)}><IoMdSearch className="h-6 w-6"/></button>
         </div>     
           { 
             openSort && (
@@ -87,7 +141,7 @@ export default function LandingPage({ initialspices,categories,format }: Props){
                   
                         {categories.map((category)=>(
                           <div className="flex flex-row items-center gap-2 mb-5">
-                            <input type="checkbox" id={`category-${category.id}`} value={category.category} className="w-5 h-5"/>
+                            <input type="checkbox" checked={selectedCategory === category.category} onChange={()=>fetchbyCategory(category.category)} id={`category-${category.id}`} className="w-5 h-5"/>
                             <label htmlFor={`category-${category.id}`} className="text-md">{category.category}</label><br/>
                           </div>              
                         ))}
@@ -95,10 +149,10 @@ export default function LandingPage({ initialspices,categories,format }: Props){
 
                    <div className="flex flex-row md:flex-col border-b border-gray-400 text-gray-600 space-y-4">
                     <h2 className="font-bold text-xl">Format</h2>
-                    {format.map((format)=>(
+                    {format.map((form)=>(
                       <div className="flex flex-row items-center gap-2 mb-5">
-                        <input type="checkbox" id={`format-${format.id}`} name={format.format} value={format.format}/>
-                        <label htmlFor={`format-${format.id}`} className="text-md">{format.format}</label><br/>
+                        <input type="checkbox" id={`format-${form.id}`} onChange={()=>handleFormat(form.format)} checked={selectedFormat === form.format}  name={form.format} className="w-5 h-5"/>
+                        <label htmlFor={`format-${form.id}`} className="text-md">{form.format}</label><br/>
                       </div>
                     ))} 
                    </div>
@@ -106,8 +160,31 @@ export default function LandingPage({ initialspices,categories,format }: Props){
               </div>
             )}
         <div
-            className={`grid flex-1 gap-5 m-3 grid-cols-1  ${isOpen ? "md:grid-cols-3 lg:grid-cols-3" : "md:grid-cols-4 lg:grid-cols-4"}`}>
-            {initialspices.map((spice) => (
+            className={`grid flex-1 gap-5 m-3 grid-cols-1 ${isOpen ? "md:grid-cols-3 lg:grid-cols-3" : "md:grid-cols-4 lg:grid-cols-4"}`}>
+
+            {!loading && spices.length>0 && spices.map((spice) =>(
+              <div  key={spice.product_id}  className="shadow-xl border border-gray-300 rounded-lg">
+                   <Link href="/spice/${spice.product_id}">
+                      <img
+                          src={`/storage/${spice.image}`}
+                          alt={spice.name}
+                          className="w-full object-cover h-64 rounded-lg"
+                      />
+                   </Link>
+                    <div className="text-center">
+                        <h2 className="font-semibold text-[#3d4246] text-lg md:text-xl">{spice.name}, {spice.format}</h2>
+                        <hr className="my-3 border-gray-200" />
+                        <p className="text-[#3d4246] font-medium text-lg"> {spice.category}</p>
+                    </div>
+                    <div className="flex items-center justify-center m-5">
+                        <button className="border border-[#a2252a] border-2 p-2 w-[90%] rounded-lg font-bold text-[#a2252a] hover:text-white hover:bg-[#a2252a]">
+                            ADD TO CART
+                        </button>
+                    </div>
+                </div>
+            ))}
+
+            {!loading && spices.length===0 && initialspices.map((spice) => (
                 <div  key={spice.product_id}  className="shadow-xl border border-gray-300 rounded-lg">
                    <Link href="/spice/${spice.product_id}">
                       <img

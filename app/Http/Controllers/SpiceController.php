@@ -77,7 +77,7 @@ class SpiceController extends Controller
 
             $results= DB::query()
             ->fromSub($spiceDescription, 'spice_description')
-            ->leftJoinSub($spiceCategory, 'spice_category', 'spice_description.product_id', '=', 'spice_category.product_id')
+            ->JoinSub($spiceCategory, 'spice_category', 'spice_description.product_id', '=', 'spice_category.product_id')
             ->select('spice_description.product_id','spice_description.name', 'spice_description.image', 'spice_description.format', 'spice_category.category')
             ->orderBy('spice_description.name','asc')
             ->get();
@@ -109,7 +109,7 @@ class SpiceController extends Controller
 
             $results= DB::query()
             ->fromSub($spiceDescription, 'spice_description')
-            ->leftJoinSub($spiceCategory, 'spice_category', 'spice_description.product_id', '=', 'spice_category.product_id')
+            ->JoinSub($spiceCategory, 'spice_category', 'spice_description.product_id', '=', 'spice_category.product_id')
             ->select('spice_description.product_id','spice_description.name', 'spice_description.image', 'spice_description.format', 'spice_category.category')
             ->orderBy('spice_description.name','asc')
             ->get();
@@ -120,7 +120,7 @@ class SpiceController extends Controller
         public function searchForSpice(Request $request){
 
         $request->validate([
-                'spice' => 'required|string|max:100|exists:spices,name',
+                'spice' => 'required|string|max:100',
             ]);
 
         $spice= $request->input('spice');
@@ -181,4 +181,11 @@ class SpiceController extends Controller
                 'spiceDetails'=>$results
             ]);        
         }
+
+        public function notFound(Request $request)
+    {
+        return Inertia::render('notfound', [
+            'searchTerm' => $request->input('spice')
+        ]);
+    }
 }
