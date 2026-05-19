@@ -9,8 +9,6 @@ import { useState } from "react";
 import { Link } from "@inertiajs/react";
 import {useDebouncedCallback} from 'use-debounce';
 import axios from "axios";
-import { data } from "react-router-dom";
-
 interface Props {
     initialspices: Spice[];
     categories:Category[];
@@ -57,7 +55,7 @@ export default function LandingPage({ initialspices,categories,format }: Props){
 
     const handleSearch = useDebouncedCallback((value: string) => {
         fetchbyName(value)
-    }, 800)
+    }, 2000)
 
     async function handleCategory(category:string|null){
       if(!category || category.length<2)return
@@ -110,9 +108,10 @@ export default function LandingPage({ initialspices,categories,format }: Props){
        <div className="box-border overflow-hidden scroll-smooth -z-10">
         <Head title="The best spice plug"/>
         <Navbar/>
-        <div className="flex flex-col text-center relative h-30 p-5 md:mt-20 border-b border-gray-300">
+        <div className="flex flex-col text-center relative  border-b border-gray-300 p-5 space-y-5 bg-[#7b1113] text-white">
             <h1 className="font-bold text-4xl tracking-tight">Take a look at our spices</h1>
-            <p className="text-lg text-balance text-[#7f2629]">Discover ethically sourced, single-origin spices harvested directly from small-scale farmers across the globe.</p>
+            <p className="text-md font-bold ">Kenyan-grown. Kenyan-owned. Non-GMO</p>
+            <p style={{fontFamily: 'Caveat Brush, cursive'}} className="text-xl text-balance">Discover ethically sourced, single-origin spices harvested directly from small-scale farmers across the globe.</p>
         </div>
         <div className="flex m-5 gap-4">
             <button onClick={toggleDropdown} className="rounded-2xl p-2 bg-[#eff2f9] border-2">Show filter</button>
@@ -120,6 +119,7 @@ export default function LandingPage({ initialspices,categories,format }: Props){
             <input className="border-2 rounded-lg w-70 p-2" placeholder="Enter spices" value={searchTerm} onChange={e => {
               setSearchTerm(e.target.value)
               handleSearch(e.target.value)
+             
             }}/>
             <button className="relative right-15" onClick={() => fetchbyName(searchTerm)}><IoMdSearch className="h-6 w-6"/></button>
         </div>     
@@ -159,8 +159,9 @@ export default function LandingPage({ initialspices,categories,format }: Props){
                 </div>
               </div>
             )}
+
         <div
-            className={`grid flex-1 gap-5 m-3 grid-cols-1 ${isOpen ? "md:grid-cols-3 lg:grid-cols-3" : "md:grid-cols-4 lg:grid-cols-4"}`}>
+            className={`grid flex-1 gap-5 mb-5 grid-cols-1 p-10 ${isOpen ? "md:grid-cols-3 lg:grid-cols-3" : "md:grid-cols-4 lg:grid-cols-4"}`}>
 
             {!loading && spices.length>0 && spices.map((spice) =>(
               <div  key={spice.product_id}  className="shadow-xl border border-gray-300 rounded-lg">
@@ -207,6 +208,7 @@ export default function LandingPage({ initialspices,categories,format }: Props){
             ))}
         </div>
     </div>
+   <Footer/>
  </div>
          
     )

@@ -29,6 +29,9 @@
         "typescript-eslint": "^8.23.0"
     },
     "dependencies": {
+        "@fontsource-variable/jetbrains-mono": "^5.2.8",
+        "@fontsource-variable/outfit": "^5.2.8",
+        "@fontsource/caveat-brush": "^5.2.8",
         "@inertiajs/react": "^3.0.0",
         "@inertiajs/vite": "^3.0.0",
         "@tailwindcss/vite": "^4.1.11",
@@ -40,6 +43,7 @@
         "clsx": "^2.1.1",
         "concurrently": "^9.0.1",
         "globals": "^15.14.0",
+        "laravel-precognition-react": "^2.0.0",
         "laravel-vite-plugin": "^3.1",
         "react": "^19.2.0",
         "react-dom": "^19.2.0",
