@@ -6,6 +6,7 @@ use Illuminate\Foundation\Http\Middleware\HandlePrecognitiveRequests;
 use Inertia\Inertia;
 use App\Http\Controllers\SpiceController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\loginController;
 
 
 Route::get('/', [SpiceController::class, 'getAllSpice']);
@@ -18,3 +19,7 @@ Route::get('/user/register', function () {
     return Inertia::render('register');
 });
 Route::post('/user/register',[UserController::class,'userRegister'],)->middleware([HandlePrecognitiveRequests::class]);
+Route::get('/user/login', function(){
+    return Inertia::render('login');
+});
+Route::post('/user/login',[loginController::class, 'authenticate'])->middleware([HandlePrecognitiveRequests::class]);
