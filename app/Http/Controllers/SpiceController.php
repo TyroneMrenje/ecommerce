@@ -38,7 +38,7 @@ class SpiceController extends Controller
             ->leftJoinSub($spice_category, 'spice_category', 'spice_description.product_id', '=', 'spice_category.product_id')
             ->select('spice_description.product_id','spice_description.name', 'spice_description.image', 'spice_description.format', 'spice_category.category')
             ->orderBy('spice_description.name','asc')
-            ->get();
+            ->paginate(20);
             
             
             return Inertia::render('landing',[

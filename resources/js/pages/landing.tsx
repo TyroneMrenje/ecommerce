@@ -1,5 +1,5 @@
 import { Head } from "@inertiajs/react";
-import { Spice } from "@/types/spice";
+import { PaginatedSpice,Spice } from "@/types/spice";
 import { Category } from "@/types/category";
 import Navbar from "@/components/navbar"; 
 import { router } from '@inertiajs/react';
@@ -9,8 +9,9 @@ import { useState } from "react";
 import { Link } from "@inertiajs/react";
 import {useDebouncedCallback} from 'use-debounce';
 import axios from "axios";
+
 interface Props {
-    initialspices: Spice[];
+    initialspices: PaginatedSpice;
     categories:Category[];
     format:{id:number, format:string}[];
 }
@@ -21,9 +22,13 @@ export default function LandingPage({ initialspices,categories,format }: Props){
     const[openSort, setIsOpenSort]=useState(false);
     const[loading, setLoading]=useState(false);
     const[searchTerm, setSearchTerm]=useState("");
-    const[spices, setSpices] = useState<Spice[]>(initialspices);
+    const[spices, setSpices] = useState<Spice[]>(initialspices.data);
     const[selectedCategory, setSelectedCategory] = useState<string | null>(null);
     const[selectedFormat, setSelectedFormat] = useState<string | null>(null);
+
+    const total= initialspices.total;
+    const last = initialspices.last_page;
+    const per_page = initialspices.per_page;
 
 
     const toggleDropdownSort = () =>setIsOpenSort(!openSort);
@@ -113,7 +118,8 @@ export default function LandingPage({ initialspices,categories,format }: Props){
             <p className="text-md font-bold ">Kenyan-grown. Kenyan-owned. Non-GMO</p>
             <p style={{fontFamily: 'Caveat Brush, cursive'}} className="text-xl text-balance">Discover ethically sourced, single-origin spices harvested directly from small-scale farmers across the globe.</p>
         </div>
-        <div className="flex m-5 gap-4">
+        <div className="flex justify-between px-10 items-center"> 
+          <div className="flex m-5 gap-4">
             <button onClick={toggleDropdown} className="rounded-2xl p-2 bg-[#eff2f9] border-2">Show filter</button>
             <button onClick={toggleDropdownSort}  className="bg-[#eff2f9] rounded-2xl p-2 border-2">Sort by:</button>
             <input className="border-2 rounded-lg w-70 p-2" placeholder="Enter spices" value={searchTerm} onChange={e => {
@@ -122,7 +128,25 @@ export default function LandingPage({ initialspices,categories,format }: Props){
              
             }}/>
             <button className="relative right-15" onClick={() => fetchbyName(searchTerm)}><IoMdSearch className="h-6 w-6"/></button>
-        </div>     
+        </div>       
+          <div className="text-center">
+            {
+                initialspices.links.map(link => (
+              link.url ?
+
+                  <Link
+                      className={`p-1 mx-1 ${link.active ? 'font-bold text-blue-400 underline' : ''}`}
+                      key={link.label} href={link.url} dangerouslySetInnerHTML={{ __html: link.label }} prefetch />
+                  :
+
+                  <span
+                      className="cursor-not-allowed text-gray-300"
+                      key={link.label} dangerouslySetInnerHTML={{ __html: link.label }}>
+                  </span>
+              ))
+            }
+          </div>  
+        </div>  
           { 
             openSort && (
                 <div className="flex flex-col absolute md:left-40  bg-red-300 h-40 p-4">
@@ -159,7 +183,6 @@ export default function LandingPage({ initialspices,categories,format }: Props){
                 </div>
               </div>
             )}
-
         <div
             className={`grid flex-1 gap-5 mb-5 grid-cols-1 p-10 ${isOpen ? "md:grid-cols-3 lg:grid-cols-3" : "md:grid-cols-4 lg:grid-cols-4"}`}>
 
@@ -185,7 +208,7 @@ export default function LandingPage({ initialspices,categories,format }: Props){
                 </div>
             ))}
 
-            {!loading && spices.length===0 && initialspices.map((spice) => (
+            {!loading && spices.length===0 && initialspices.data.map((spice) => (
                 <div  key={spice.product_id}  className="shadow-xl border border-gray-300 rounded-lg">
                    <Link href="/spice/${spice.product_id}">
                       <img

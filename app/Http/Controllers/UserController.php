@@ -8,6 +8,7 @@ use Illuminate\Validation\Rules\Password;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use Illuminate\Auth\Events\Registered;
 
 class UserController extends Controller
 {
@@ -33,6 +34,7 @@ class UserController extends Controller
             'password'=>Hash::make($credentials['password'])
             
         ]);
+        event(new Registered($user));
 
         Auth::login($user);   
         
