@@ -16,7 +16,7 @@ Route::get('/spices/category', [SpiceController::class, 'searchbyCategory']);
 Route::get('/spices/format', [SpiceController::class, 'searchbyFormat']);
 Route::get('/spice', [SpiceController::class, 'searchForSpice']);
 Route::get('/spices/not-found', [SpiceController::class, 'notFound']);
-Route::get('/spice/{id}',[SpiceController::class, 'getSpiceDetails']);
+Route::get('/spice/details',[SpiceController::class, 'getSpiceDetails']);
 Route::get('/user/register', function () {
     return Inertia::render('register');
 });

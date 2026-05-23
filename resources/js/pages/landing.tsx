@@ -11,6 +11,7 @@ import {useDebouncedCallback} from 'use-debounce';
 import axios from "axios";
 
 interface Props {
+    spiceDetails:Spice[];
     initialspices: PaginatedSpice;
     categories:Category[];
     format:{id:number, format:string}[];
@@ -25,12 +26,10 @@ export default function LandingPage({ initialspices,categories,format }: Props){
     const[spices, setSpices] = useState<Spice[]>(initialspices.data);
     const[selectedCategory, setSelectedCategory] = useState<string | null>(null);
     const[selectedFormat, setSelectedFormat] = useState<string | null>(null);
-
-    const total= initialspices.total;
-    const last = initialspices.last_page;
-    const per_page = initialspices.per_page;
-
-
+    const[spiceDetails, setSpiceDetails] = useState<Spice | null>(null);
+    const[spiceDetailsId, setSpiceDetailsId] = useState<number | null>(null);
+    const[spiceDetailsFormat, setSpiceDetailsFormat] = useState<string | null>(null);
+    
     const toggleDropdownSort = () =>setIsOpenSort(!openSort);
     const toggleDropdown = () =>setIsOpen(!isOpen);
 
@@ -61,6 +60,27 @@ export default function LandingPage({ initialspices,categories,format }: Props){
     const handleSearch = useDebouncedCallback((value: string) => {
         fetchbyName(value)
     }, 2000)
+
+    async function fetchSpiceDetails(id:number){
+
+        if(!id)return
+        setLoading(true);
+
+        try{
+            const { data } = await axios.get('/spice/details',{
+                headers:{
+                    "Content-Type":"application/json"
+                },
+                params:{
+                    id,
+                    format
+                }
+            });
+            setSpiceDetails(data)
+        }finally{
+            setLoading(false)
+        }
+     }
 
     async function handleCategory(category:string|null){
       if(!category || category.length<2)return
@@ -210,7 +230,7 @@ export default function LandingPage({ initialspices,categories,format }: Props){
 
             {!loading && spices.length===0 && initialspices.data.map((spice) => (
                 <div  key={spice.product_id}  className="shadow-xl border border-gray-300 rounded-lg">
-                   <Link href="/spice/${spice.product_id}">
+                   <Link href="/spice/details">
                       <img
                           src={`/storage/${spice.image}`}
                           alt={spice.name}

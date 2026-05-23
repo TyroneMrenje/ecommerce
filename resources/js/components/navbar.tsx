@@ -31,6 +31,7 @@ const Navbar = () => {
                      <button>
                         <CgProfile  className="h-5 w-5"/>
                     </button>
+                   
                     <button
                         onClick={toggleDropdown}
                         className="md:hidden relative mr-5 mt-2 rounded-md text-white"
