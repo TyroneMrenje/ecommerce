@@ -16,7 +16,7 @@ Route::get('/spices/category', [SpiceController::class, 'searchbyCategory']);
 Route::get('/spices/format', [SpiceController::class, 'searchbyFormat']);
 Route::get('/spice', [SpiceController::class, 'searchForSpice']);
 Route::get('/spices/not-found', [SpiceController::class, 'notFound']);
-Route::get('/spice/details',[SpiceController::class, 'getSpiceDetails']);
+Route::get('/spice/{id}/{format}',[SpiceController::class, 'getSpiceDetails']);
 Route::get('/user/register', function () {
     return Inertia::render('register');
 });
@@ -28,7 +28,7 @@ Route::post('/user/login',[loginController::class, 'authenticate'])->middleware(
 
 Route::get('/email/verify', function () {
     return Inertia::render('emailverify');
-})->middleware('auth')->name('verification.notice');
+})->middleware('auth','throttle:6,1')->name('verification.notice');
 
 Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
     $request->fulfill();

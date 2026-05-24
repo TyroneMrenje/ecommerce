@@ -20,3 +20,16 @@ export interface PaginatedSpice {
     total: number
     links: Array<any>
 }
+
+export interface SpiceDetails {
+    product_id: number
+    name: string
+    description: string
+    recommendation: string
+    image: string
+    format: string
+    category: string | null
+    price: number
+    weight: number
+    weight_unit: string
+}

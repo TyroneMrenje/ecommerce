@@ -27,9 +27,7 @@ export default function LandingPage({ initialspices,categories,format }: Props){
     const[selectedCategory, setSelectedCategory] = useState<string | null>(null);
     const[selectedFormat, setSelectedFormat] = useState<string | null>(null);
     const[spiceDetails, setSpiceDetails] = useState<Spice | null>(null);
-    const[spiceDetailsId, setSpiceDetailsId] = useState<number | null>(null);
-    const[spiceDetailsFormat, setSpiceDetailsFormat] = useState<string | null>(null);
-    
+
     const toggleDropdownSort = () =>setIsOpenSort(!openSort);
     const toggleDropdown = () =>setIsOpen(!isOpen);
 
@@ -61,13 +59,13 @@ export default function LandingPage({ initialspices,categories,format }: Props){
         fetchbyName(value)
     }, 2000)
 
-    async function fetchSpiceDetails(id:number){
+    async function fetchSpiceDetails(id:number,format:string){
 
         if(!id)return
         setLoading(true);
 
         try{
-            const { data } = await axios.get('/spice/details',{
+            const { data } = await axios.get(`/spice/${id}/${format}`,{
                 headers:{
                     "Content-Type":"application/json"
                 },
@@ -76,11 +74,18 @@ export default function LandingPage({ initialspices,categories,format }: Props){
                     format
                 }
             });
+            
             setSpiceDetails(data)
         }finally{
             setLoading(false)
         }
      }
+
+
+      function handleSpiceDetails(id: number, format: string) {
+          fetchSpiceDetails(id, format) 
+      }
+    
 
     async function handleCategory(category:string|null){
       if(!category || category.length<2)return
@@ -208,13 +213,14 @@ export default function LandingPage({ initialspices,categories,format }: Props){
 
             {!loading && spices.length>0 && spices.map((spice) =>(
               <div  key={spice.product_id}  className="shadow-xl border border-gray-300 rounded-lg">
-                   <Link href="/spice/${spice.product_id}">
+                     <Link href={`/spice/${spice.product_id}/${spice.format}`}>
                       <img
                           src={`/storage/${spice.image}`}
                           alt={spice.name}
                           className="w-full object-cover h-64 rounded-lg"
+                          onClick={()=>handleSpiceDetails(spice.product_id, spice.format)}
                       />
-                   </Link>
+                    </Link>
                     <div className="text-center">
                         <h2 className="font-semibold text-[#3d4246] text-lg md:text-xl">{spice.name}, {spice.format}</h2>
                         <hr className="my-3 border-gray-200" />
@@ -230,13 +236,14 @@ export default function LandingPage({ initialspices,categories,format }: Props){
 
             {!loading && spices.length===0 && initialspices.data.map((spice) => (
                 <div  key={spice.product_id}  className="shadow-xl border border-gray-300 rounded-lg">
-                   <Link href="/spice/details">
+                    <Link href={`/spice/${spice.product_id}/${spice.format}`}>
                       <img
                           src={`/storage/${spice.image}`}
                           alt={spice.name}
                           className="w-full object-cover h-64 rounded-lg"
+                          onClick={()=>handleSpiceDetails(spice.product_id, spice.format)}
                       />
-                   </Link>
+                    </Link>
                     <div className="text-center">
                         <h2 className="font-semibold text-[#3d4246] text-lg md:text-xl">{spice.name}, {spice.format}</h2>
                         <hr className="my-3 border-gray-200" />

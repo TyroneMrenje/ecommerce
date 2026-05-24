@@ -149,30 +149,24 @@ class SpiceController extends Controller
             return response()->json($results);
         }
 
-        public function getSpiceDetails(Request $request){
+        public function getSpiceDetails(Request $request, int $id, string $format){
 
-            $request->validate([
-                'id' => 'required|integer | exists:spices,id',
-                'format'=>'required|string|exists:spice_format,format'
-            ]);
-
-        $id= $request->input('id');
-        $format= $request ->input('format');
+        abort_if(!is_numeric($id), 400);
+        abort_if(!DB::table('spices')->where('id', $id)->exists(), 404);
+        abort_if(!DB::table('spice_format')->where('format', $format)->exists(), 404);
 
         $spiceDescription = DB::table('spice_description')
             ->join('spices', 'spice_description.spices_id', '=','spices.id')
             ->join('spice_format', 'spice_description.spice_format_id', '=', 'spice_format.id')
             ->select('spices.name','spices.recommendation','spices.description','spices.id as product_id', 'spice_description.image','spice_format.format','spice_description.spice_format_id')
-            ->where("spices.id", [$id])
-            ->where("spice_format.format", [$format])
-            ->orderBy('spices.name', 'asc')
-            ->first();
+            ->where("spices.id", $id)
+            ->where("spice_format.format", $format)
+            ->orderBy('spices.name', 'asc');
         
         $spicePrices= DB::table('spice_price')
             ->join('spice_format', 'spice_price.spice_format_id', '=', 'spice_format.id')
-            ->select('spice_price.','spice_price.price', 'spice_price.weight','spice_price.weight_unit')
-            ->where('spice_price.spice_format_id',)
-            ->first();
+            ->select('spice_price.spice_format_id','spice_price.price', 'spice_price.weight','spice_price.weight_unit')
+            ->where('spice_format.format',$format);
 
         $spice_category = DB::table('spice_group')
             ->join('spice_category', 'spice_group.spice_category_id', '=', 'spice_category.id')
@@ -181,11 +175,11 @@ class SpiceController extends Controller
 
             $results= DB::query()
             ->fromSub($spiceDescription, 'spice_description')
-            ->joinSub($spicePrices,'spice_price', 'spice_price.spice_format_id', '=', 'spice_description.spice_format_id')
+            ->leftjoinSub($spicePrices,'spice_price', 'spice_price.spice_format_id', '=', 'spice_description.spice_format_id')
             ->JoinSub($spice_category, 'spice_category', 'spice_description.product_id', '=', 'spice_category.product_id')
-            ->select('spice_description.product_id','spice_description.name', 'spice_description.description','spice_description.recommendation', 'spice_description.image', 'spice_description.format', 'spice_category.category')
+            ->select('spice_description.product_id','spice_price.price','spice_price.weight','spice_price.weight_unit','spice_description.name', 'spice_description.description','spice_description.recommendation', 'spice_description.image', 'spice_description.format', 'spice_category.category')
             ->orderBy('spice_description.name','asc')
-            ->get();
+            ->first();
 
             return inertia::render('spicepage',[
                 'spiceDetails'=>$results
