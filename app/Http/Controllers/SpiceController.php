@@ -165,8 +165,10 @@ class SpiceController extends Controller
         
         $spicePrices= DB::table('spice_price')
             ->join('spice_format', 'spice_price.spice_format_id', '=', 'spice_format.id')
-            ->select('spice_price.spice_format_id','spice_price.price', 'spice_price.weight','spice_price.weight_unit')
-            ->where('spice_format.format',$format);
+            ->select('spice_price.spice_format_id',
+             DB::raw("json_agg(json_build_object('price', spice_price.price, 'weight', spice_price.weight, 'weight_unit', spice_price.weight_unit)) as prices"))
+            ->where('spice_format.format',$format)
+            ->groupBy('spice_price.spice_format_id');
 
         $spice_category = DB::table('spice_group')
             ->join('spice_category', 'spice_group.spice_category_id', '=', 'spice_category.id')
@@ -175,11 +177,14 @@ class SpiceController extends Controller
 
             $results= DB::query()
             ->fromSub($spiceDescription, 'spice_description')
-            ->leftjoinSub($spicePrices,'spice_price', 'spice_price.spice_format_id', '=', 'spice_description.spice_format_id')
+            ->joinSub($spicePrices,'spice_price', 'spice_price.spice_format_id', '=', 'spice_description.spice_format_id')
             ->JoinSub($spice_category, 'spice_category', 'spice_description.product_id', '=', 'spice_category.product_id')
-            ->select('spice_description.product_id','spice_price.price','spice_price.weight','spice_price.weight_unit','spice_description.name', 'spice_description.description','spice_description.recommendation', 'spice_description.image', 'spice_description.format', 'spice_category.category')
+            ->select('spice_description.product_id','spice_price.spice_format_id','spice_price.prices','spice_description.name', 'spice_description.description','spice_description.recommendation', 'spice_description.image', 'spice_description.format', 'spice_category.category')
             ->orderBy('spice_description.name','asc')
             ->first();
+
+
+          $results->prices = json_decode($results->prices, true) ?? [];
 
             return inertia::render('spicepage',[
                 'spiceDetails'=>$results

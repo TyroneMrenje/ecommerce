@@ -21,6 +21,12 @@ export interface PaginatedSpice {
     links: Array<any>
 }
 
+export interface SpicePrice{
+    price:number
+    weight: number
+    weight_unit: string
+}
+
 export interface SpiceDetails {
     product_id: number
     name: string
@@ -29,7 +35,6 @@ export interface SpiceDetails {
     image: string
     format: string
     category: string | null
-    price: number
-    weight: number
-    weight_unit: string
+    prices:SpicePrice[]
+    
 }

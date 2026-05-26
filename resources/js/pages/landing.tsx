@@ -209,16 +209,17 @@ export default function LandingPage({ initialspices,categories,format }: Props){
               </div>
             )}
         <div
-            className={`grid flex-1 gap-5 mb-5 grid-cols-1 p-10 ${isOpen ? "md:grid-cols-3 lg:grid-cols-3" : "md:grid-cols-4 lg:grid-cols-4"}`}>
+            className={`grid flex-1 gap-5 mb-5 grid-cols-1 p-10  ${isOpen ? "md:grid-cols-3 lg:grid-cols-3" : "md:grid-cols-4 lg:grid-cols-4"}`}>
 
             {!loading && spices.length>0 && spices.map((spice) =>(
-              <div  key={spice.product_id}  className="shadow-xl border border-gray-300 rounded-lg">
+              <div  key={spice.product_id}  className=" shadow-xl border border-gray-300 rounded-lg">
                      <Link href={`/spice/${spice.product_id}/${spice.format}`}>
                       <img
                           src={`/storage/${spice.image}`}
                           alt={spice.name}
                           className="w-full object-cover h-64 rounded-lg"
                           onClick={()=>handleSpiceDetails(spice.product_id, spice.format)}
+                          loading="lazy"
                       />
                     </Link>
                     <div className="text-center">
@@ -235,7 +236,7 @@ export default function LandingPage({ initialspices,categories,format }: Props){
             ))}
 
             {!loading && spices.length===0 && initialspices.data.map((spice) => (
-                <div  key={spice.product_id}  className="shadow-xl border border-gray-300 rounded-lg">
+                <div  key={spice.product_id}  className=" relative shadow-xl border border-gray-300 rounded-lg">
                     <Link href={`/spice/${spice.product_id}/${spice.format}`}>
                       <img
                           src={`/storage/${spice.image}`}
