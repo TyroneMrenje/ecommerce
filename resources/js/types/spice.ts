@@ -7,8 +7,8 @@ export interface Spice {
     category:string | null;
     recommendation:string;
     description:string;
+    prices:SpicePrice[]
    
-
 }
 
 export interface PaginatedSpice {
@@ -26,6 +26,7 @@ export interface SpicePrice{
     weight: number
     weight_unit: string
 }
+
 
 export interface SpiceDetails {
     product_id: number

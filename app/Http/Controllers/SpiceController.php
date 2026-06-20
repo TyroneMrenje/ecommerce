@@ -25,7 +25,7 @@ class SpiceController extends Controller
             $spiceDescription = DB::table('spice_description')
             ->join('spices', 'spice_description.spices_id', '=','spices.id')
             ->join('spice_format', 'spice_description.spice_format_id', '=', 'spice_format.id')
-            ->select('spices.name','spices.id as product_id', 'spice_description.image','spice_format.format')
+            ->select('spices.name','spices.id as product_id', 'spice_description.image','spice_format.format','spice_description.spice_format_id')
             ->orderBy('spices.name', 'asc');
 
             $spice_category = DB::table('spice_group')
@@ -33,12 +33,24 @@ class SpiceController extends Controller
             ->select('spice_group.spice_id as product_id', DB::raw("string_agg(spice_category.category, '  ') as category"))
             ->groupBy('spice_group.spice_id');
 
+            $spicePrices= DB::table('spice_price')
+            ->join('spice_format', 'spice_price.spice_format_id', '=', 'spice_format.id')
+            ->select('spice_price.spice_format_id',
+             DB::raw("json_agg(json_build_object('price', spice_price.price, 'weight', spice_price.weight, 'weight_unit', spice_price.weight_unit)) as prices"))
+            ->groupBy('spice_price.spice_format_id');
+
             $spices= DB::query()
             ->fromSub($spiceDescription, 'spice_description')
             ->leftJoinSub($spice_category, 'spice_category', 'spice_description.product_id', '=', 'spice_category.product_id')
-            ->select('spice_description.product_id','spice_description.name', 'spice_description.image', 'spice_description.format', 'spice_category.category')
+            ->leftJoinSub($spicePrices,'spice_price', 'spice_price.spice_format_id', '=', 'spice_description.spice_format_id')
+            ->select('spice_description.spice_format_id','spice_price.prices','spice_description.product_id','spice_description.name', 'spice_description.image', 'spice_description.format', 'spice_category.category')
             ->orderBy('spice_description.name','asc')
             ->paginate(20);
+
+            $spices->getCollection()->transform(function($item){
+                $item->prices = json_decode($item->prices, true) ?? [];
+                return $item;
+            });
             
             
             return Inertia::render('landing',[

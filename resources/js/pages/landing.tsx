@@ -1,18 +1,18 @@
 import { Head } from "@inertiajs/react";
-import { PaginatedSpice,Spice } from "@/types/spice";
+import { PaginatedSpice,Spice, SpicePrice } from "@/types/spice";
 import { Category } from "@/types/category";
 import Navbar from "@/components/navbar"; 
 import { router } from '@inertiajs/react';
 import Footer from "@/components/footer";
 import { IoMdSearch,IoIosArrowDown } from "react-icons/io";
 import{ MdOutlineExpandLess} from "react-icons/md"
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "@inertiajs/react";
 import {useDebouncedCallback} from 'use-debounce';
 import axios from "axios";
 
 interface Props {
-    spiceDetails:Spice[];
+  
     initialspices: PaginatedSpice;
     categories:Category[];
     format:{id:number, format:string}[];
@@ -29,10 +29,13 @@ export default function LandingPage({ initialspices,categories,format }: Props){
     const[selectedCategory, setSelectedCategory] = useState<string | null>(null);
     const[selectedFormat, setSelectedFormat] = useState<string | null>(null);
     const[spiceDetails, setSpiceDetails] = useState<Spice | null>(null);
+    const[selectedPrice, setSelectedPrice] = useState<SpicePrice>(initialspices.data[0].prices[0]);
 
     const toggleDropdownSort = () =>setIsOpenSort(!openSort);
     const toggleDropdown = () =>setIsOpen(!isOpen);
     const toggleInput = () => setshowInput(!showInput);
+
+    
 
     async function fetchbyName(value:string){
       if(value.length<2) return
@@ -47,6 +50,7 @@ export default function LandingPage({ initialspices,categories,format }: Props){
             spice:value
           }
         });
+
         if(data.length===0){
         router.visit("/spices/not-found",{
           data:{spice:value}
@@ -88,6 +92,7 @@ export default function LandingPage({ initialspices,categories,format }: Props){
       function handleSpiceDetails(id: number, format: string) {
           fetchSpiceDetails(id, format) 
       }
+    
     
 
     async function handleCategory(category:string|null){
@@ -137,11 +142,12 @@ export default function LandingPage({ initialspices,categories,format }: Props){
         fetchbyFormat(value);
       }
 
+
     return(
        <div className="box-border overflow-hidden scroll-smooth -z-10">
         <Head title="The best spice plug"/>
-        <div className="w-full text-center bg-blue-300 p-2">
-          <p className="">Pay after delivery for areas within Nairobi(some areas of Nairobi😑)</p>
+        <div className="w-full text-center bg-blue-200">
+          <p className="">Pay after delivery for areas within Nairobi (some areas of Nairobi😑)</p>
         </div>
         <Navbar/>
         <div className="flex flex-col text-center relative  border-b border-gray-300 p-5 space-y-5 bg-[#7b1113] w-full text-white">
@@ -165,7 +171,6 @@ export default function LandingPage({ initialspices,categories,format }: Props){
             }
             <button className="relative p-2 transition delay-70 duration-200 ease-in-out  hover:bg-gray-200 rounded-full" onClick={toggleInput} ><IoMdSearch className="h-7 w-7"/></button>                       
         </div>  
-
           <div className="text-right mr-10">
               {
                   initialspices.links.map(link => (
@@ -183,6 +188,7 @@ export default function LandingPage({ initialspices,categories,format }: Props){
                 ))
               }
             </div> 
+           
           { 
             openSort && (
                 <div className="flex flex-col absolute md:left-40  bg-red-300 h-40 p-4">
@@ -226,21 +232,37 @@ export default function LandingPage({ initialspices,categories,format }: Props){
         <div
             className={`grid flex-1 gap-5 mb-5 grid-cols-1 p-10  ${isOpen ? "md:grid-cols-1 lg:grid-cols-3" : "md:grid-cols-3 lg:grid-cols-4"}`}>
 
-            {!loading && spices.length>0 && spices.map((spice) =>(
-              <div  key={spice.product_id}  className=" shadow-xl border border-gray-300 rounded-lg">
+            {!loading && spices.map((spice) =>(
+              <div  key={spice.product_id}  className="border border-gray-400 rounded-lg">
                      <Link href={`/spice/${spice.product_id}/${spice.format}`}>
                       <img
                           src={`/storage/${spice.image}`}
                           alt={spice.name}
-                          className="w-full object-cover h-64 rounded-lg"
+                          className="w-full object-cover h-64 border-b border-gray-300 rounded-t-lg"
                           onClick={()=>handleSpiceDetails(spice.product_id, spice.format)}
                           loading="lazy"
                       />
                     </Link>
-                    <div className="text-center">
-                        <h2 className="font-semibold text-[#3d4246] text-lg md:text-xl">{spice.name}, {spice.format}</h2>
-                        <hr className="my-3 border-gray-200" />
-                        <p className="text-[#3d4246] font-medium text-lg"> {spice.category}</p>
+                    <div className="flex flex-col items-start p-2 space-y-2">
+                       <h2 className="text-xs bg-gray-900 text-white size-min px-[2px]">{spice.format}</h2>
+                       <div className="flex flex-row justify-between w-full items-center ">                     
+                            <h2 className="font-medium text-gray-900 text-2xl">{spice.name}</h2>     
+                            <p className="font-medium">Kshs {selectedPrice.price}</p>                        
+                       </div>
+                        <div className="flex flex-row items-center justify-center gap-2">                 
+                        {spice.prices.map((price,index)=>(
+                        <div key={index} className="text-[11px] text-white size-min">
+                           <button onClick={()=>setSelectedPrice(price)}
+                            className={`px-2 rounded-lg border-2 font-medium transition-colors
+                                ${selectedPrice.weight === price.weight
+                                    ? 'border-[#a2252a] bg-[#a2252a] text-white'
+                                    : 'border-gray-300 text-gray-700 hover:border-[#a2252a]'
+                                }`}
+                            >{price.weight}{price.weight_unit}</button>
+                            </div>
+                        ))} 
+                     </div>
+                        <p className="text-[#3d4246] font-medium text-md"> {spice.category}</p>
                     </div>
                     <div className="flex items-center justify-center m-5">
                         <button className="border border-[#a2252a] border-2 p-2 w-[90%] rounded-lg font-bold text-[#a2252a] hover:text-white hover:bg-[#a2252a]">
@@ -262,6 +284,14 @@ export default function LandingPage({ initialspices,categories,format }: Props){
                     </Link>
                     <div className="text-center">
                         <h2 className="font-semibold text-[#3d4246] text-lg md:text-xl">{spice.name}, {spice.format}</h2>
+                        <div className="flex flex-row items-center justify-center gap-3">                 
+                          {spice.prices.map((price,index)=>(
+                          <div key={index} className="text bg-gray-900 px-2 size-min">
+                             <button>{price.weight}{price.weight_unit}</button>
+                             <p>{price.price}</p>
+                          </div>
+                         ))}
+                     </div>
                         <hr className="my-3 border-gray-200" />
                         <p className="text-[#3d4246] font-medium text-lg"> {spice.category}</p>
                     </div>

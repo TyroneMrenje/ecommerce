@@ -4,7 +4,7 @@ import Navbar from "@/components/navbar";
 import Footer  from "@/components/footer";
 import { useState} from "react";
 import axios from "axios";
-import { SpiceDetails } from "@/types/spice";
+import { SpiceDetails,SpicePrice } from "@/types/spice";
 import { IoIosArrowUp } from "react-icons/io";
 import { IoIosArrowDown } from "react-icons/io";
 
@@ -16,6 +16,7 @@ interface Props{
 export default function SpicePage({spiceDetails}:Props){
 
     const[count,setCount]= useState<number>(0);
+    const [selectedPrice, setSelectedPrice] = useState<SpicePrice>(spiceDetails.prices[0])
     
     const prev=() =>{
 
@@ -36,9 +37,12 @@ export default function SpicePage({spiceDetails}:Props){
                 </div>
 
                 <div className="flex flex-col relative  items-start lg:w-[45%]">
-                    <div className="border-b border-gray-600 py-8 w-full">
-                        <h2 style={{fontFamily: 'JetBrains Mono Variable, monospace'}}  className="md:font-semibold bg-gray-900 text-gray-200 size-min px-[3px] mb-2">{spiceDetails.format}</h2>
-                        <h1 style={{fontFamily: 'JetBrains Mono Variable, monospace'}} className=" text-xl md:text-4xl font-black">{spiceDetails.name}</h1>                
+                    <div className="border-b border-gray-600 py-4 w-full">
+                        <h2 style={{fontFamily: 'JetBrains Mono Variable, monospace'}}  className="text-sm font-semibold bg-gray-900 text-gray-200 size-min px-[3px] mb-2">{spiceDetails.format}</h2>
+                        <h1 style={{fontFamily: 'JetBrains Mono Variable, monospace'}} className=" text-2xl md:text-4xl font-black">{spiceDetails.name}</h1>    
+                        <p className="text-lg font-medium mt-2">
+                           Kshs {selectedPrice.price} 
+                        </p>            
                     </div>
                    <div className="border-b border-gray-600 pb-8">
                         <p className="text-sm md:text-md text-pretty tracking-wide py-4">{spiceDetails.description}</p>
@@ -50,7 +54,14 @@ export default function SpicePage({spiceDetails}:Props){
                      <div className="flex flex-row items-center justify-center gap-3">                 
                         {spiceDetails.prices.map((price,index)=>(
                         <div key={index} className="">
-                            <button className="bg-gray-900 text-gray-200 px-[6px]">{price.weight}{price.weight_unit}</button>
+                            <button 
+                            onClick={()=>setSelectedPrice(price)}
+                            className={`px-4 py-2 rounded-lg border-2 font-medium transition-colors
+                                ${selectedPrice.weight === price.weight
+                                    ? 'border-[#a2252a] bg-[#a2252a] text-white'
+                                    : 'border-gray-300 text-gray-700 hover:border-[#a2252a]'
+                                }`}
+                            >{price.weight}{price.weight_unit}</button>
                         </div>
                      ))}
                     </div>

@@ -16,10 +16,8 @@ class SpicePriceSeeder extends Seeder
     {
         //
           $prices=[
-            "Whole"=>[[20,84.00],[50,194.00],[80,297.00],[150,345.00]],
-            "Ground"=>[[15,76,00],[37,150.00],[59,240.00],[110,450.00]],
-            "Blend"=>[[60,220.00],[90,330.00],[130,440.00]],
-            "Herbaceous"=>[[10,40.00]]
+            "Liquid"=>[[20,129.00],[100,337.00],[250,497.00]],
+            
         ];
 
         foreach($prices as $format =>$priceList){
@@ -33,7 +31,7 @@ class SpicePriceSeeder extends Seeder
                 ],
                 [
                     'price'=>$price,
-                    'weight_unit'=>'g'
+                    'weight_unit'=>'ml'
                 ]
                 );
             

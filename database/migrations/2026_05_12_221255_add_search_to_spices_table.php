@@ -10,23 +10,26 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
-    {
-        Schema::table('spices', function (Blueprint $table) {
+   public function up(): void
+{
+    // drop if exists first
+    DB::statement("ALTER TABLE spices DROP COLUMN IF EXISTS search_vector");
+    
+    DB::statement("
+        ALTER TABLE spices 
+        ADD COLUMN search_vector tsvector 
+        GENERATED ALWAYS AS (to_tsvector('english', name)) STORED
+    ");
 
-           DB::statement("ALTER TABLE spices ADD COLUMN search_vector tsvector GENERATED ALWAYS AS (to_tsvector('english', name || ' ' || slug)) STORED");
-           DB::statement("CREATE INDEX spices_search_vector_idx ON spices USING GIN(search_vector)");
-            
-        });
-    }
+    DB::statement("
+        CREATE INDEX IF NOT EXISTS spices_search_vector_idx 
+        ON spices USING GIN(search_vector)
+    ");
+}
 
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
-    {
-        Schema::table('spices', function (Blueprint $table) {
-            //
-        });
-    }
+public function down(): void
+{
+    DB::statement("DROP INDEX IF EXISTS spices_search_vector_idx");
+    DB::statement("ALTER TABLE spices DROP COLUMN IF EXISTS search_vector");
+}
 };
