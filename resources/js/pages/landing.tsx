@@ -2,6 +2,7 @@ import { Head } from "@inertiajs/react";
 import { PaginatedSpice,Spice, SpicePrice } from "@/types/spice";
 import { Category } from "@/types/category";
 import Navbar from "@/components/navbar"; 
+import SpicePriceSelector from "@/components/spicepriceselector"; 
 import { router } from '@inertiajs/react';
 import Footer from "@/components/footer";
 import { IoMdSearch,IoIosArrowDown } from "react-icons/io";
@@ -233,7 +234,7 @@ export default function LandingPage({ initialspices,categories,format }: Props){
             className={`grid flex-1 gap-5 mb-5 grid-cols-1 p-10  ${isOpen ? "md:grid-cols-1 lg:grid-cols-3" : "md:grid-cols-3 lg:grid-cols-4"}`}>
 
             {!loading && spices.map((spice) =>(
-              <div  key={spice.product_id}  className="border border-gray-400 rounded-lg">
+              <div  key={spice.product_id}  className=" border border-gray-400 rounded-lg">
                      <Link href={`/spice/${spice.product_id}/${spice.format}`}>
                       <img
                           src={`/storage/${spice.image}`}
@@ -246,28 +247,17 @@ export default function LandingPage({ initialspices,categories,format }: Props){
                     <div className="flex flex-col items-start p-2 space-y-2">
                        <h2 className="text-xs bg-gray-900 text-white size-min px-[2px]">{spice.format}</h2>
                        <div className="flex flex-row justify-between w-full items-center ">                     
-                            <h2 className="font-medium text-gray-900 text-2xl">{spice.name}</h2>     
-                            <p className="font-medium">Kshs {selectedPrice.price}</p>                        
+                            <h2 className="font-medium text-gray-900 text-2xl">{spice.name}</h2>  
+                                            
                        </div>
-                        <div className="flex flex-row items-center justify-center gap-2">                 
-                        {spice.prices.map((price,index)=>(
-                        <div key={index} className="text-[11px] text-white size-min">
-                           <button onClick={()=>setSelectedPrice(price)}
-                            className={`px-2 rounded-lg border-2 font-medium transition-colors
-                                ${selectedPrice.weight === price.weight
-                                    ? 'border-[#a2252a] bg-[#a2252a] text-white'
-                                    : 'border-gray-300 text-gray-700 hover:border-[#a2252a]'
-                                }`}
-                            >{price.weight}{price.weight_unit}</button>
-                            </div>
-                        ))} 
-                     </div>
+                       <SpicePriceSelector prices={spice.prices ?? []}/>
                         <p className="text-[#3d4246] font-medium text-md"> {spice.category}</p>
-                    </div>
-                    <div className="flex items-center justify-center m-5">
                         <button className="border border-[#a2252a] border-2 p-2 w-[90%] rounded-lg font-bold text-[#a2252a] hover:text-white hover:bg-[#a2252a]">
                             ADD TO CART
                         </button>
+                    </div>
+                    <div className="flex items-center justify-center m-5">
+                        
                     </div>
                 </div>
             ))}
