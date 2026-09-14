@@ -16,7 +16,7 @@ export default function Login(){
                       <h1 className="font-bold text-[#a2252a] text-3xl hover:pointer">Amimo Spices</h1>  
                     </Link>
                 </div>    
-                <Form method="POST" action='/users/login'
+                <Form method="POST" action='/user/login'
                     resetOnSuccess
                     disableWhileProcessing
                     className="flex flex-col justify-center items-start space-y-4"

@@ -9,6 +9,7 @@ use Inertia\Inertia;
 use App\Http\Controllers\SpiceController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\loginController;
+use App\Http\Controllers\CartController;
 
 
 Route::get('/', [SpiceController::class, 'getAllSpice']);
@@ -41,3 +42,16 @@ Route::post('/email/verification-notification', function (Request $request) {
  
     return back()->with('message', 'Verification link sent!');
 })->middleware(['auth', 'throttle:6,1'])->name('verification.send');
+
+
+Route::prefix('cart')->group(function () {
+    Route::get('/', [CartController::class, 'index']);   
+    Route::post('/add', [CartController::class, 'add']); 
+
+   
+    Route::middleware('auth')->group(function () {
+        Route::patch('/update', [CartController::class, 'update']);
+        Route::delete('/remove', [CartController::class, 'remove']);
+        Route::delete('/clear', [CartController::class, 'clear']);
+    });
+});

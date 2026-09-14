@@ -23,7 +23,7 @@ export default function LandingPage({ initialspices,categories,format }: Props){
 
     const[isOpen, setIsOpen]=useState(false);
     const[openSort, setIsOpenSort]=useState(false);
-    const[loading, setLoading]=useState(false);
+    const[loading, setLoading]=useState(true);
     const[searchTerm, setSearchTerm]=useState("");
     const[showInput, setshowInput]=useState(false);
     const[spices, setSpices] = useState<Spice[]>(initialspices.data);
@@ -36,6 +36,10 @@ export default function LandingPage({ initialspices,categories,format }: Props){
     const toggleDropdown = () =>setIsOpen(!isOpen);
     const toggleInput = () => setshowInput(!showInput);
 
+    
+    useEffect(() => {
+        setLoading(false)
+    }, [])
     
 
     async function fetchbyName(value:string){
@@ -154,7 +158,7 @@ export default function LandingPage({ initialspices,categories,format }: Props){
         <div className="flex flex-col text-center relative  border-b border-gray-300 p-5 space-y-5 bg-[#7b1113] w-full text-white">
             <h1 className="font-bold text-2xl md:text-4xl tracking-tight">Take a look at our spices</h1>
             <p className=" text-sm font-bold md:text-md">Kenyan-grown. Kenyan-owned. Non-GMO</p>
-            <p style={{fontFamily: 'Caveat Brush, cursive'}} className=" text-sm text-pretty md:text-xl md:text-balance">Discover ethically sourced, single-origin spices harvested directly from small-scale farmers across the globe.</p>
+            <p style={{fontFamily: 'Caveat Brush, cursive'}} className=" text-sm text-pretty md:text-xl md:text-balance">Discover ethically sourced, single-origin spices harvested directly from small-scale farmers across the country.</p>
         </div>
        
         <div className="flex md:px-7 md:items-center m-5 gap-3">            
@@ -232,8 +236,56 @@ export default function LandingPage({ initialspices,categories,format }: Props){
 
         <div
             className={`grid flex-1 gap-5 mb-5 grid-cols-1 p-10  ${isOpen ? "md:grid-cols-1 lg:grid-cols-3" : "md:grid-cols-3 lg:grid-cols-4"}`}>
+                     
+            {loading ?
+              <div className=" border border-gray-400 rounded-lg">
+                     <div className="w-full object-cover h-64 border-b border-gray-300 rounded-t-lg animate-pulse bg-gray-600">                     
+                    </div>
+                    <div className="flex flex-col items-start p-2 space-y-2">
+                       <div className="text-xs bg-gray-900 text-white size-min px-[2px] animate-pulse bg-gray-600"></div>
+                       <div className="flex flex-row justify-between w-full items-center ">                     
+                            <div className="font-medium text-gray-900 text-2xl"></div>                                       
+                       </div>
+                        <div className="text-[#3d4246] font-medium text-md"></div>
+                        <div className="border border-[#a2252a] border-2 p-2 w-[90%] rounded-lg animate-pulse">
+                           
+                        </div>
+                    </div>
+                    <div className="flex items-center justify-center m-5">                    
+                    </div>
+                </div> :
+                spices.map((spice) => (
+              <div key={spice.product_id}  className=" border border-gray-400 rounded-lg">
+                     <Link href={`/spice/${spice.product_id}/${spice.format}`}>
+                      <img
+                          src={`/storage/${spice.image}`}
+                          alt={spice.name}
+                          className="w-full object-cover h-64 border-b border-gray-300 rounded-t-lg"
+                          onClick={()=>handleSpiceDetails(spice.product_id, spice.format)}
+                          onLoad={()=>setLoading(false)}
+                          loading="lazy"
+                      />
+                    </Link>
+                    <div className="flex flex-col items-start p-2 space-y-2">
+                       <h2 className="text-xs bg-gray-900 text-white size-min px-[2px]">{spice.format}</h2>
+                       <div className="flex flex-row justify-between w-full items-center ">                     
+                            <h2 className="font-medium text-gray-900 text-2xl">{spice.name}</h2>  
+                                            
+                       </div>
+                       <SpicePriceSelector prices={spice.prices ?? []}/>
+                        <p className="text-[#3d4246] font-medium text-md"> {spice.category}</p>
+                        <button className="border border-[#a2252a] border-2 p-2 w-[90%] rounded-lg font-bold text-[#a2252a] hover:text-white hover:bg-[#a2252a]">
+                            ADD TO CART
+                        </button>
+                    </div>
+                    <div className="flex items-center justify-center m-5">
+                        
+                    </div>
+                </div>
+            ))}
 
-            {!loading && spices.map((spice) =>(
+
+            {!loading && spices.map((spice) => (
               <div  key={spice.product_id}  className=" border border-gray-400 rounded-lg">
                      <Link href={`/spice/${spice.product_id}/${spice.format}`}>
                       <img
@@ -260,7 +312,8 @@ export default function LandingPage({ initialspices,categories,format }: Props){
                         
                     </div>
                 </div>
-            ))}
+            ))
+          }
 
             {!loading && spices.length===0 && initialspices.data.map((spice) => (
                 <div  key={spice.product_id}  className=" relative shadow-xl border border-gray-300 rounded-lg">
