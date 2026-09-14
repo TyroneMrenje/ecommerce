@@ -7,6 +7,7 @@ import axios from "axios";
 import { SpiceDetails,SpicePrice } from "@/types/spice";
 import { IoIosArrowUp } from "react-icons/io";
 import { IoIosArrowDown } from "react-icons/io";
+import { useCart } from "@/components/cart";
 
 
 interface Props{
@@ -18,6 +19,7 @@ export default function SpicePage({spiceDetails}:Props){
     const[count,setCount]= useState<number>(0);
     const [selectedPrice, setSelectedPrice] = useState<SpicePrice>(spiceDetails.prices[0])
     const[loading, setLoading]= useState(true)
+    const { addToCart } = useCart()
 
 
     useEffect(() => {
@@ -37,41 +39,17 @@ export default function SpicePage({spiceDetails}:Props){
     const totalPrice= count * selectedPrice.price
     const totalWeight= count * selectedPrice.weight
 
-    async function HandleCart(totalPrice:number, id:string, totalWeight:number, ){
-
-        if(totalPrice === 0 || totalWeight === 0)return
-        setLoading(true)
-
-        try{
-            
-         const{data}= await axios.post('/cart',{
-            headers:{
-            "content-Type": "application/json"
-            },
-            params:{
-                totalPrice,
-                totalWeight,
-            }      
-
-        })
-
-        }finally{
-        setLoading(false)
-      }
-
-    }
-
-
-
+    
 
     return(
         <div className="box-border overflow-hidden scroll-smooth -z-10">
             <Head title="The itty bitty details"/>
             <Navbar/>
             {loading ? 
+
             <div className="flex flex-col lg:flex-row justify-around relative p-10 text-gray-900 bg-[#e5e5e5] transition delay-100 duration-250 ease-in-out brightness-60">
                 <div className="h-90 md:h-130 lg:h-130 backdrop-blur rounded-lg shadow-lg border border-gray-200 lg:w-[50%]">
-                     <img src={`/storage/${spiceDetails.image}`} className="w-full h-full aspect-square md:aspect-auto rounded-lg object-cover z-50 "/>
+                     <div className="w-full h-full aspect-square md:aspect-auto rounded-lg object-cover z-50"></div>
                 </div>
 
                 <div className="flex flex-col relative  items-start lg:w-[45%]">
@@ -118,7 +96,9 @@ export default function SpicePage({spiceDetails}:Props){
                     </div>
                 </div>
            </div>
+
            :
+
             <div className="flex flex-col lg:flex-row justify-around relative p-10 text-gray-900 bg-[#e5e5e5]">
                 <div className="h-90 md:h-130 lg:h-130 backdrop-blur rounded-lg shadow-lg border border-gray-200 lg:w-[50%]">
                      <img src={`/storage/${spiceDetails.image}`} className="w-full h-full aspect-square md:aspect-auto rounded-lg object-cover z-50 "/>
@@ -161,10 +141,13 @@ export default function SpicePage({spiceDetails}:Props){
                             <button onClick={next}><IoIosArrowUp /></button>
                         </div>
                         <button
-                        //onClick={()=>setLoading(true)} 
+                        onClick={() => addToCart(spiceDetails.product_id, spiceDetails.price_id, 1)}
+                        disabled={loading}
                         style={{fontFamily: 'JetBrains Mono Variable, monospace'}} 
                         className="bg-gray-900 text-white px-4 h-10 w-70 rounded-lg transition delay-100 duration-250 ease-in-out  hover:scale-110 hover:bg-white hover:text-gray-900"
-                        >ADD TO CART {totalPrice} KSH</button>                      
+                        >
+                            {loading ? 'Adding...' : 'ADD TO CART' } {totalPrice} KSH
+                        </button>                      
                     </div>
                 </div>
            </div>

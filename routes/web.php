@@ -44,6 +44,8 @@ Route::post('/email/verification-notification', function (Request $request) {
 })->middleware(['auth', 'throttle:6,1'])->name('verification.send');
 
 
+Route::get('/cart', [CartController::class, 'index']); 
+
 Route::prefix('cart')->group(function () {
     Route::get('/', [CartController::class, 'index']);   
     Route::post('/add', [CartController::class, 'add']); 

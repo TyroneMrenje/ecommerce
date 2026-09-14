@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import { SpicePrice } from '@/types/spice'
 
+
 interface Props {
     prices: SpicePrice[] | undefined
 }

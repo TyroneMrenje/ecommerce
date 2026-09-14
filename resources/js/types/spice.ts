@@ -37,5 +37,7 @@ export interface SpiceDetails {
     format: string
     category: string | null
     prices:SpicePrice[]
+    price_id:number
+    
     
 }
